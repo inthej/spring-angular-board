@@ -1,0 +1,13 @@
+/* reset.css */
+
+/* 기본 스타일 초기화 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 글꼴 관련 스타일 초기화 */
+body {
+  font-family: Arial, sans-serif;
+}

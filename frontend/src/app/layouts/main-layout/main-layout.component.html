@@ -1,6 +1,6 @@
 <div class="main-layout-container">
   <div class="topnav">
-    <a routerLink="/home" routerLinkActive="active">Home</a>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
     <a routerLink="/board" routerLinkActive="active">Board</a>
     <a routerLink="/login" class="split">Login</a>
   </div>

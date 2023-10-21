@@ -1,1 +1,86 @@
-<p>BoardView Page</p>
+<div class="board-view-container">
+  <form novalidate>
+    <div class="input-group">
+      <label for="title">제목</label>
+      <input
+        type="text"
+        id="title"
+        placeholder="제목을 입력하세요..."
+      />
+    </div>
+
+    <div class="input-group">
+      <label for="author">작성자</label>
+      <input
+        type="text"
+        id="author"
+        placeholder="작성자명"
+      />
+    </div>
+
+    <div class="input-group">
+      <label for="password">비밀번호</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="비밀번호를 입력하세요..."
+      />
+    </div>
+
+    <div class="input-group">
+      <label for="content">내용</label>
+      <textarea
+        id="content"
+        rows="10"
+        placeholder="내용을 작성하세요..."
+      ></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="list-btn">
+        목록
+      </button>
+
+      <div class="form-modify-actions">
+        <button type="button" class="delete-btn">
+          삭제
+        </button>
+
+        <button type="button" class="edit-btn">
+          편집
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <div class="comments-section">
+    <div class="comments-list">
+      <div class="comment">
+        <div class="comment-author">작성자: John Doe</div>
+        <div class="comment-text">이 게시물은 정말 유용합니다.</div>
+      </div>
+      <!-- 다른 댓글들도 유사한 구조로 나열합니다 -->
+    </div>
+
+    <form novalidate class="comment-form">
+      <div class="comment-user-group">
+        <input
+          class="comment-author-input"
+          type="text"
+          placeholder="작성자명"
+        />
+        <input
+          class="comment-password-input"
+          type="password"
+          placeholder="비밀번호"
+        />
+      </div>
+      <textarea
+        placeholder="댓글을 입력하세요..."
+      ></textarea>
+      <button class="submit-comment">
+        등록
+      </button>
+    </form>
+  </div>
+</div>

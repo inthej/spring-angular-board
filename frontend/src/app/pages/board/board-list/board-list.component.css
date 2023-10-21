@@ -1,0 +1,128 @@
+.board-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+  height: 650px;
+}
+
+.board-header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.board-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.board-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 2;
+  padding: 5px 10px;
+  margin-right: 10px;
+}
+
+.create-btn {
+  padding: 5px 15px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: small;
+}
+
+table th, table td {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+tbody tr {
+  cursor: pointer;
+}
+
+tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* 번호 (Number) */
+table th:nth-child(1), table td:nth-child(1) {
+  width: 10%;
+}
+
+/* 제목 (Title) */
+table th:nth-child(2), table td:nth-child(2) {
+  width: 50%;
+}
+
+/* 작성자 (Author) */
+table th:nth-child(3), table td:nth-child(3) {
+  width: 20%;
+}
+
+/* 작성일 (Date) */
+table th:nth-child(4), table td:nth-child(4) {
+  min-width: 150px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 조회수 (View count) */
+table th:nth-child(5), table td:nth-child(5) {
+  width: 10%;
+}
+
+.title {
+  text-align: left;
+  min-width: 200px;
+}
+
+.page-btn {
+  cursor: pointer;
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  margin: 0 5px;
+  transition: background-color 0.3s;
+}
+
+.page-btn.active {
+  background-color: #007BFF; /* 파란색 배경 */
+  color: #ffffff; /* 흰색 글씨 */
+  border: 1px solid #007BFF; /* 파란색 테두리 */
+}
+
+.page-btn:hover {
+  background-color: #eaeaea;
+}
+
+.page-btn.active {
+  background-color: #007BFF;
+  color: #ffffff;
+  border: none;
+}

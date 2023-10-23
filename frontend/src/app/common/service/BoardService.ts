@@ -1,65 +1,62 @@
 import * as BoardDto from "../model/BoardDto";
 import { ResponseModel } from "../model/ResponseModel";
-import axios from "axios";
 import AppConstants from "../AppConstants";
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { catchError, map, Observable, throwError } from "rxjs";
 
-class BoardService {
-  private readonly apiUrl: string;
+@Injectable({
+  providedIn: 'root'
+})
+export class BoardService {
+  private readonly apiUrl: string = `${AppConstants.BASE_URL}/board`;
 
-  constructor() {
-    this.apiUrl = `${AppConstants.BASE_URL}/board`;
+  constructor(private http: HttpClient) {
   }
 
-  get = async (id: number): Promise<BoardDto.Response> => {
-    try {
-      const path = `${this.apiUrl}/${id}`;
-      const responseModel: ResponseModel<BoardDto.Response> = await axios.get(path);
-      return responseModel.data;
-    } catch (error) {
-      throw error;
-    }
+  get(id: number): Observable<BoardDto.Response> {
+    const path = `${this.apiUrl}/${id}`;
+    return this.http.get<ResponseModel<BoardDto.Response>>(path)
+      .pipe(
+        map(response => response.data),
+        catchError(error => throwError(error))
+      );
   }
 
-  create = async (form: BoardDto.Create): Promise<BoardDto.Response> => {
-    try {
-      const path = this.apiUrl;
-      const responseModel: ResponseModel<BoardDto.Response> = await axios.post(path, form);
-      return responseModel.data;
-    } catch (error) {
-      throw error;
-    }
+  create(form: BoardDto.Create): Observable<BoardDto.Response> {
+    const path = this.apiUrl;
+    return this.http.post<ResponseModel<BoardDto.Response>>(path, form)
+      .pipe(
+        map(response => response.data),
+        catchError(error => throwError(error))
+      )
   }
 
-  update = async (id: number, form: BoardDto.Update): Promise<BoardDto.Response> => {
-    try {
-      const path = `${this.apiUrl}/${id}`;
-      const responseModel: ResponseModel<BoardDto.Response> = await axios.put(path, form);
-      return responseModel.data;
-    } catch (error) {
-      throw error;
-    }
+  update(id: number, form: BoardDto.Update): Observable<BoardDto.Response> {
+    const path = `${this.apiUrl}/${id}`;
+    return this.http.put<ResponseModel<BoardDto.Response>>(path, form)
+      .pipe(
+        map(response => response.data),
+        catchError(error => throwError(error))
+      )
+  };
+
+  delete(id: number): Observable<BoardDto.Response> {
+    const path = `${this.apiUrl}/${id}`;
+    return this.http.delete<ResponseModel<BoardDto.Response>>(path)
+      .pipe(
+        map(response => response.data),
+        catchError(error => throwError(error))
+      );
   }
 
-  delete = async (id: number): Promise<BoardDto.Response> => {
-    try {
-      const path = `${this.apiUrl}/${id}`;
-      const responseModel: ResponseModel<BoardDto.Response> = await axios.delete(path);
-      return responseModel.data;
-    } catch (error) {
-      throw error;
-    }
+  list(form: BoardDto.RequestList): Observable<BoardDto.ResponseList> {
+    const path = this.apiUrl;
+    return this.http.get<ResponseModel<BoardDto.ResponseList>>(path, { params: <any>form })
+      .pipe(
+        map(response => response.data),
+        catchError(error => throwError(error))
+      )
+  }
 }
-
-  list = async (form: BoardDto.RequestList): Promise<BoardDto.ResponseList> => {
-    try {
-      const path = this.apiUrl;
-      const responseModel: ResponseModel<BoardDto.ResponseList> = await axios.get(path, { params: form });
-      return responseModel.data;
-    } catch (error) {
-      throw error;
-    }
-  }
-}
-
-export const boardService = new BoardService();
 

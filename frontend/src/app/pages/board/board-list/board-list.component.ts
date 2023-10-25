@@ -24,6 +24,7 @@ export class BoardListComponent implements OnInit, OnDestroy {
     list: []
   }
 
+  private pageListSubscription: Subscription | undefined;
   private errorSubscription: Subscription | undefined;
   private debounceKeywordChange = _.debounce(this.changeKeyword, 300)
 
@@ -36,7 +37,7 @@ export class BoardListComponent implements OnInit, OnDestroy {
   }
 
   private async search() {
-    this.boardService.list(this.page)
+    this.pageListSubscription = this.boardService.list(this.page)
       .pipe(
         catchError(error => {
           this.appErrorHandler.report(error);
@@ -47,6 +48,10 @@ export class BoardListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.pageListSubscription) {
+      this.pageListSubscription.unsubscribe();
+    }
+
     if (this.errorSubscription) {
       this.errorSubscription.unsubscribe();
     }

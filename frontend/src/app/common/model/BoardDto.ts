@@ -22,6 +22,16 @@ export interface Summary {
   created_dt: string;
 }
 
+export interface ListItem {
+  rownum: number;
+  id: number;
+  title: string;
+  content: string;
+  writer: string;
+  view_count: number;
+  created_dt: string;
+}
+
 export interface Create {
   title: string;
   writer: string;
@@ -41,5 +51,5 @@ export interface RequestList extends PageListDto.Request {
   keyword?: string;
 }
 
-export interface ResponseList extends PageListDto.Response<Summary> {
+export interface ResponseList extends PageListDto.Response<ListItem> {
 }

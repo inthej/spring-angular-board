@@ -4,7 +4,7 @@ export interface ResponseModel<T> {
   error: ErrorModel;
 }
 
-interface ErrorModel {
+export interface ErrorModel {
   code: string;
   message: string;
   data: ErrorData;

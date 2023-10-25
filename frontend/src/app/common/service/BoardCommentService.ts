@@ -14,25 +14,25 @@ export class BoardCommentService {
   constructor(private http: HttpClient) {
   }
 
-  get(bid: number, id: number): Observable<BoardCommentDto.Response> {
+  get = (bid: number, id: number): Observable<BoardCommentDto.Response> => {
     const path = `${this.apiUrl}/${bid}/comment/${id}`;
     return this.http.get<ResponseModel<BoardCommentDto.Response>>(path)
       .pipe(
         map(response => response.data),
         catchError(error => throwError(error))
-      )
+      );
   }
 
-  create(bid: number, form: BoardCommentDto.Create): Observable<BoardCommentDto.Response> {
+  create = (bid: number, form: BoardCommentDto.Create): Observable<BoardCommentDto.Response> => {
     const path = `${this.apiUrl}/${bid}/comment`;
     return this.http.post<ResponseModel<BoardCommentDto.Response>>(path, form)
       .pipe(
         map(response => response.data),
         catchError(error => throwError(error))
-      )
+      );
   }
 
-  update(bid: number, id: number, form: BoardCommentDto.Update): Observable<BoardCommentDto.Response> {
+  update = (bid: number, id: number, form: BoardCommentDto.Update): Observable<BoardCommentDto.Response> => {
     const path = `${this.apiUrl}/${bid}/comment/${id}`;
     return this.http.put<ResponseModel<BoardCommentDto.Response>>(path, form)
       .pipe(
@@ -41,16 +41,16 @@ export class BoardCommentService {
       );
   }
 
-  delete(bid: number, id: number): Observable<BoardCommentDto.Response> {
+  delete = (bid: number, id: number): Observable<BoardCommentDto.Response> => {
     const path = `${this.apiUrl}/${bid}/comment/${id}`;
     return this.http.delete<ResponseModel<BoardCommentDto.Response>>(path)
       .pipe(
         map(response => response.data),
         catchError(error => throwError(error))
-      )
+      );
   }
 
-  list(bid: string, form: BoardCommentDto.RequestList): Observable<BoardCommentDto.ResponseList> {
+  list = (bid: string, form: BoardCommentDto.RequestList): Observable<BoardCommentDto.ResponseList> => {
     const path = `${this.apiUrl}/${bid}/comments`;
     return this.http.get<ResponseModel<BoardCommentDto.ResponseList>>(path, { params: <any>form })
       .pipe(

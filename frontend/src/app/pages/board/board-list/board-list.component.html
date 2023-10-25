@@ -1,8 +1,8 @@
 <div class="board-container">
   <div class="board-header">
     <div class="board-actions">
-      <input type="text" placeholder="검색어를 입력하세요..." class="search-input">
-      <button class="create-btn">
+      <input type="text" placeholder="검색어를 입력하세요..." class="search-input" (input)="handleKeywordChange($event)">
+      <button class="create-btn" (click)="handleCreateBtnClick()">
         글쓰기
       </button>
     </div>
@@ -17,117 +17,19 @@
       </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td class="title">Sample Title 1</td>
-          <td>John Doe</td>
-          <td>2023-10-21</td>
-          <td>100</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td class="title">Sample Title 2</td>
-          <td>Jane Smith</td>
-          <td>2023-10-22</td>
-          <td>75</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td class="title">Sample Title 3</td>
-          <td>Bob Johnson</td>
-          <td>2023-10-23</td>
-          <td>50</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td class="title">Sample Title 4</td>
-          <td>Alice Brown</td>
-          <td>2023-10-24</td>
-          <td>80</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td class="title">Sample Title 5</td>
-          <td>Michael White</td>
-          <td>2023-10-25</td>
-          <td>120</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td class="title">Sample Title 6</td>
-          <td>Susan Lee</td>
-          <td>2023-10-26</td>
-          <td>90</td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td class="title">Sample Title 7</td>
-          <td>David Wilson</td>
-          <td>2023-10-27</td>
-          <td>60</td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td class="title">Sample Title 8</td>
-          <td>Lisa Davis</td>
-          <td>2023-10-28</td>
-          <td>70</td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td class="title">Sample Title 9</td>
-          <td>James Miller</td>
-          <td>2023-10-29</td>
-          <td>110</td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td class="title">Sample Title 10</td>
-          <td>Emily Clark</td>
-          <td>2023-10-30</td>
-          <td>95</td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td class="title">Sample Title 11</td>
-          <td>Robert Anderson</td>
-          <td>2023-10-31</td>
-          <td>105</td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td class="title">Sample Title 12</td>
-          <td>Mary Hall</td>
-          <td>2023-11-01</td>
-          <td>85</td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td class="title">Sample Title 13</td>
-          <td>William Harris</td>
-          <td>2023-11-02</td>
-          <td>115</td>
-        </tr>
-        <tr>
-          <td>14</td>
-          <td class="title">Sample Title 14</td>
-          <td>Karen Martin</td>
-          <td>2023-11-03</td>
-          <td>45</td>
-        </tr>
-        <tr>
-          <td>15</td>
-          <td class="title">Sample Title 15</td>
-          <td>Thomas Thompson</td>
-          <td>2023-11-04</td>
-          <td>65</td>
+        <tr *ngFor="let post of pageList.list" (click)="handleRowSelect(post.id)">
+          <td>{{ post.rownum }}</td>
+          <td class="title">{{post.title }}</td>
+          <td>{{ post.writer }}</td>
+          <td>{{ post.created_dt }}</td>
+          <td>{{ post.view_count }}</td>
         </tr>
       </tbody>
     </table>
   </div>
   <div class="board-footer">
-    <button class="page-btn" disabled>&lt;</button>
-    <span>1 / 1</span>
-    <button class="page-btn" disabled>&gt;</button>
+    <button class="page-btn" (click)="handlePrevBtnClick()" [disabled]="page.page <= 1">&lt;</button>
+    <span>{{ page.page }} / {{ pageList.pages }}</span>
+    <button class="page-btn" (click)="handleNextBtnClick()" [disabled]="page.page >= pageList.pages">&gt;</button>
   </div>
 </div>

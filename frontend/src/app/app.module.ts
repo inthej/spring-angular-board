@@ -8,6 +8,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { BoardViewComponent } from './pages/board/board-view/board-view.component';
 import { BoardListComponent } from './pages/board/board-list/board-list.component';
 import { AppRoutingModule } from './app-routing.module';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { AppRoutingModule } from './app-routing.module';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

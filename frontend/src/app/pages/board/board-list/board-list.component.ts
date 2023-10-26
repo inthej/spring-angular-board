@@ -2,9 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import * as BoardDto from "../../../common/model/BoardDto";
 import { BoardService } from "../../../common/service/BoardService";
 import AppConstants from "../../../common/AppConstants";
-import { catchError, of, Subscription } from "rxjs";
-import * as _ from "lodash-es";
-import { AppErrorHandler } from "../../../common/handler/AppErrorHandler";
+import { catchError, debounceTime, distinctUntilChanged, of, Subject, switchMap, takeUntil } from "rxjs";
+import { AppErrorService } from "../../../common/service/AppErrorService";
 
 @Component({
   selector: 'app-board-list',
@@ -24,41 +23,50 @@ export class BoardListComponent implements OnInit, OnDestroy {
     list: []
   }
 
-  private pageListSubscription: Subscription | undefined;
-  private errorSubscription: Subscription | undefined;
-  private debounceKeywordChange = _.debounce(this.changeKeyword, 300)
+  private keywordInput$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
-  constructor(private boardService: BoardService, private appErrorHandler: AppErrorHandler) {
+  constructor(private boardService: BoardService, private appErrorHandler: AppErrorService) {
   }
 
   ngOnInit(): void {
     this.search();
+
+    this.subscribeToKeywordChange();
     this.subscribeToErrors();
   }
 
-  private async search() {
-    this.pageListSubscription = this.boardService.list(this.page)
-      .pipe(
-        catchError(error => {
-          this.appErrorHandler.report(error);
-          return of(this.pageList);
-        })
-      )
-      .subscribe(data => this.updatePageList(data));
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  ngOnDestroy(): void {
-    if (this.pageListSubscription) {
-      this.pageListSubscription.unsubscribe();
-    }
+  private search() {
+    this.boardService.list(this.page).pipe(
+      distinctUntilChanged(),
+      takeUntil(this.destroy$),
+      catchError(error => {
+        this.appErrorHandler.report(error);
+        return of(this.pageList);
+      })
+    ).subscribe(data => this.updatePageList(data));
+  }
 
-    if (this.errorSubscription) {
-      this.errorSubscription.unsubscribe();
-    }
+  private subscribeToKeywordChange() {
+    this.keywordInput$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap((keyword) => this.boardService.list({ ... this.page, page: 1, keyword })),
+      takeUntil(this.destroy$),
+      catchError(error => {
+        this.appErrorHandler.report(error);
+        return of(this.pageList);
+      })
+    ).subscribe(data => this.updatePageList(data));
   }
 
   private subscribeToErrors(): void {
-    this.errorSubscription = this.appErrorHandler.stream$.subscribe(error => {
+    this.appErrorHandler.stream$.subscribe(error => {
       if (error) {
         alert(error.message);
         this.appErrorHandler.clear();
@@ -70,18 +78,9 @@ export class BoardListComponent implements OnInit, OnDestroy {
     this.pageList = data;
   }
 
-  private changeKeyword(keyword: string) {
-    this.page = {
-      ...this.page,
-      page: 1,
-      keyword
-    };
-    this.search();
-  }
-
   public handleKeywordChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.debounceKeywordChange(input.value);
+    this.keywordInput$.next(input.value);
   }
 
   public handleCreateBtnClick(): void {

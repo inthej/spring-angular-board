@@ -3,7 +3,7 @@ import * as BoardDto from "../../../common/model/BoardDto";
 import { BoardService } from "../../../common/service/BoardService";
 import AppConstants from "../../../common/AppConstants";
 import { catchError, debounceTime, distinctUntilChanged, of, Subject, switchMap, takeUntil } from "rxjs";
-import { AppErrorService } from "../../../common/service/AppErrorService";
+import { AppErrorHandler } from "../../../common/handler/AppErrorHandler";
 
 @Component({
   selector: 'app-board-list',
@@ -11,6 +11,9 @@ import { AppErrorService } from "../../../common/service/AppErrorService";
   styleUrls: ['./board-list.component.css']
 })
 export class BoardListComponent implements OnInit, OnDestroy {
+  private keywordInput$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
   public page: BoardDto.RequestList = {
     page: 1,
     size: AppConstants.DEFAULT_PAGE_SIZE,
@@ -23,16 +26,12 @@ export class BoardListComponent implements OnInit, OnDestroy {
     list: []
   }
 
-  private keywordInput$ = new Subject<string>();
-  private destroy$ = new Subject<void>();
-
-  constructor(private boardService: BoardService, private appErrorHandler: AppErrorService) {
+  constructor(private boardService: BoardService, private appErrorHandler: AppErrorHandler) {
   }
 
   ngOnInit(): void {
     this.search();
-
-    this.subscribeToKeywordChange();
+    this.subscribeToKeywordChanges();
     this.subscribeToErrors();
   }
 
@@ -52,7 +51,7 @@ export class BoardListComponent implements OnInit, OnDestroy {
     ).subscribe(data => this.updatePageList(data));
   }
 
-  private subscribeToKeywordChange() {
+  private subscribeToKeywordChanges() {
     this.keywordInput$.pipe(
       debounceTime(300),
       distinctUntilChanged(),

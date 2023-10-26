@@ -6,7 +6,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 @Injectable({
   providedIn: 'root'
 })
-export class AppErrorService {
+export class AppErrorHandler {
   private subject = new BehaviorSubject<ErrorModel | null>(null);
 
   get stream$() {

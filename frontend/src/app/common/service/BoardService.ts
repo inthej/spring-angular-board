@@ -3,7 +3,8 @@ import { ResponseModel } from "../model/ResponseModel";
 import AppConstants from "../AppConstants";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { catchError, map, Observable, throwError } from "rxjs";
+import { catchError, map, Observable, tap, throwError } from "rxjs";
+import LogUtils from "../utils/LogUtils";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,10 @@ export class BoardService {
     return this.http.get<ResponseModel<BoardDto.Response>>(path)
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardService.get', error);
+          return throwError(error);
+        })
       );
   }
 
@@ -28,7 +32,10 @@ export class BoardService {
     return this.http.post<ResponseModel<BoardDto.Response>>(path, form)
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardService.create', error);
+          return throwError(error);
+        })
       );
   }
 
@@ -37,7 +44,10 @@ export class BoardService {
     return this.http.put<ResponseModel<BoardDto.Response>>(path, form)
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardService.update', error);
+          return throwError(error);
+        })
       );
   };
 
@@ -46,7 +56,10 @@ export class BoardService {
     return this.http.delete<ResponseModel<BoardDto.Response>>(path)
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardService.delete', error);
+          return throwError(error);
+        })
       );
   }
 
@@ -55,7 +68,10 @@ export class BoardService {
     return this.http.get<ResponseModel<BoardDto.ResponseList>>(path, { params: <any>form })
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardService.list', error);
+          return throwError(error);
+        })
       );
   }
 }

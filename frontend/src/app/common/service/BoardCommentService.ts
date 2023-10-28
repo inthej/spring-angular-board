@@ -4,6 +4,7 @@ import { ResponseModel } from "../model/ResponseModel";
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { catchError, map, Observable, throwError } from "rxjs";
+import LogUtils from "../utils/LogUtils";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,10 @@ export class BoardCommentService {
     return this.http.get<ResponseModel<BoardCommentDto.Response>>(path)
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardCommentService.get', error)
+          return throwError(error);
+        })
       );
   }
 
@@ -28,7 +32,10 @@ export class BoardCommentService {
     return this.http.post<ResponseModel<BoardCommentDto.Response>>(path, form)
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardCommentService.create', error)
+          return throwError(error);
+        })
       );
   }
 
@@ -37,7 +44,10 @@ export class BoardCommentService {
     return this.http.put<ResponseModel<BoardCommentDto.Response>>(path, form)
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardCommentService.update', error)
+          return throwError(error);
+        })
       );
   }
 
@@ -46,7 +56,10 @@ export class BoardCommentService {
     return this.http.delete<ResponseModel<BoardCommentDto.Response>>(path)
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardCommentService.delete', error)
+          return throwError(error);
+        })
       );
   }
 
@@ -55,7 +68,10 @@ export class BoardCommentService {
     return this.http.get<ResponseModel<BoardCommentDto.ResponseList>>(path, { params: <any>form })
       .pipe(
         map(response => response.data),
-        catchError(error => throwError(error))
+        catchError(error => {
+          LogUtils.error('BoardCommentService.list', error)
+          return throwError(error);
+        })
       )
   }
 }

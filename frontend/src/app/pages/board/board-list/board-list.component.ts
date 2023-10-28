@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import * as BoardDto from "../../../common/model/BoardDto";
 import { BoardService } from "../../../common/service/BoardService";
 import AppConstants from "../../../common/AppConstants";
-import { catchError, debounceTime, distinctUntilChanged, of, Subject, switchMap, takeUntil } from "rxjs";
+import { catchError, debounceTime, of, Subject, switchMap, takeUntil } from "rxjs";
 import { AppErrorHandler } from "../../../common/handler/AppErrorHandler";
 
 @Component({
@@ -42,7 +42,6 @@ export class BoardListComponent implements OnInit, OnDestroy {
 
   private search() {
     this.boardService.list(this.page).pipe(
-      distinctUntilChanged(),
       takeUntil(this.destroy$),
       catchError(error => {
         this.appErrorHandler.report(error);
@@ -54,7 +53,6 @@ export class BoardListComponent implements OnInit, OnDestroy {
   private subscribeToKeywordChanges() {
     this.keywordInput$.pipe(
       debounceTime(300),
-      distinctUntilChanged(),
       switchMap((keyword) => this.boardService.list({ ... this.page, page: 1, keyword })),
       takeUntil(this.destroy$),
       catchError(error => {

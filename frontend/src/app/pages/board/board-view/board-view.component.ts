@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from "@angular/common";
 import * as AppTypes from "../../../common/AppTypes";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import ValueUtils from "../../../common/utils/ValueUtils";
 import { BoardService } from "../../../common/service/BoardService";
@@ -17,37 +17,43 @@ import * as BoardCommentDto from "../../../common/model/BoardCommentDto";
 })
 export class BoardViewComponent implements OnInit, OnDestroy {
   private no: number = -1;
-  private currentMode: AppTypes.PageMode = AppTypes.PageMode.view;
-  postForm: FormGroup;
-  commentForm: FormGroup;
-  commentList: BoardCommentDto.ResponseList = {
+  private destroy$ = new Subject<void>();
+
+  protected readonly AppTypes = AppTypes;
+
+  public currentMode: AppTypes.PageMode = AppTypes.PageMode.view;
+
+  public commentList: BoardCommentDto.ResponseList = {
     total: 0,
     pages: 0,
     list: []
   }
 
-  private destroy$ = new Subject<void>();
+  public postForm = this.fb.group({
+    title: ['', Validators.required],
+    author: ['', Validators.required],
+    password: ['', Validators.required],
+    content: ['', Validators.required]
+  });
+
+  public commentForm = this.fb.group({
+    writer: ['', Validators.required],
+    password: ['', Validators.required],
+    content: ['', Validators.required]
+  });
+
+  public isSubmitting = false;
+  public isCommentSubmitting = false;
+
   constructor(
-    private location: Location,
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private fb: FormBuilder,
     private boardService: BoardService,
     private boardCommentService: BoardCommentService,
     private appErrorHandler: AppErrorHandler
   ) {
-    this.postForm = this.fb.group({
-      title: ['', Validators.required],
-      author: ['', Validators.required],
-      password: ['', Validators.required],
-      content: ['', Validators.required]
-    })
-
-    this.commentForm = this.fb.group({
-      writer: ['', Validators.required],
-      password: ['', Validators.required],
-      content: ['', Validators.required]
-    })
   }
 
   ngOnInit(): void {
@@ -64,14 +70,17 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.no = params['no'];
       this.currentMode = ValueUtils.nvl(params['mode'], AppTypes.PageMode.view);
+      const isViewMode = this.currentMode === AppTypes.PageMode.view;
 
-      if (!this.no && this.currentMode === AppTypes.PageMode.view) {
+      if (isViewMode && !this.no) {
         alert('유효하지 않은 접근입니다.');
         this.router.navigate(['/board/list']);
         return;
       }
 
-      this.loadPage();
+      if (isViewMode) {
+        this.loadPage();
+      }
     })
   }
 
@@ -103,8 +112,9 @@ export class BoardViewComponent implements OnInit, OnDestroy {
         this.postForm.setValue({
           title: ValueUtils.nvl(data.title),
           author: ValueUtils.nvl(data.writer),
+          password: '',
           content: ValueUtils.nvl(data.content)
-        })
+        });
       }
     })
   }
@@ -131,7 +141,6 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   public handleDeleteClick() {
     if (confirm('정말로 이 게시물을 삭제하시겠습니까?')) {
-      // @ts-ignore
       this.boardService.delete(this.no).pipe(
         takeUntil(this.destroy$),
         catchError(error => {
@@ -144,17 +153,22 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  public handleCacelClick() {
+  public handleCancelClick() {
     if (this.currentMode === AppTypes.PageMode.edit) {
       this.currentMode = AppTypes.PageMode.view;
+      return;
     }
+
+    this.location.back();
   }
 
-  public onSubmit() {
-
+  public submitPostForm() {
+    this.isSubmitting = true;
+    this.isSubmitting = false;
   }
 
-  public onCommentSubmit() {
-
+  public submitCommentForm() {
+    this.isCommentSubmitting = true;
+    this.isCommentSubmitting = false;;
   }
 }

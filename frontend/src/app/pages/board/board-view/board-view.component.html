@@ -1,5 +1,5 @@
 <div class="board-view-container">
-  <form [formGroup]="this.postForm" novalidate>
+  <form [formGroup]="postForm" novalidate>
     <div class="input-group">
       <label for="title">제목</label>
       <input
@@ -7,6 +7,7 @@
         id="title"
         formControlName="title"
         placeholder="제목을 입력하세요..."
+        [readonly]="currentMode === AppTypes.PageMode.view"
       />
     </div>
 
@@ -17,10 +18,11 @@
         id="author"
         formControlName="author"
         placeholder="작성자명"
+        [readonly]="currentMode === AppTypes.PageMode.view"
       />
     </div>
 
-    <div class="input-group">
+    <div class="input-group" *ngIf="currentMode !== AppTypes.PageMode.view">
       <label for="password">비밀번호</label>
       <input
         type="password"
@@ -37,52 +39,77 @@
         formControlName="content"
         rows="10"
         placeholder="내용을 작성하세요..."
+        [readonly]="currentMode === AppTypes.PageMode.view"
       ></textarea>
     </div>
 
     <div class="form-actions">
-      <button type="button" class="list-btn" (click)="handleListClick()">
-        목록
-      </button>
-
-      <div class="form-modify-actions">
-        <button type="button" class="delete-btn" (click)="handleDeleteClick()">
-          삭제
+      <ng-container *ngIf="currentMode === AppTypes.PageMode.view">
+        <button type="button" class="list-btn" (click)="handleListClick()">
+          목록
         </button>
 
-        <button type="button" class="edit-btn" (click)="handleEditClick()">
-          편집
+        <div class="form-modify-actions">
+          <button type="button" class="delete-btn" (click)="handleDeleteClick()">
+            삭제
+          </button>
+
+          <button type="button" class="edit-btn" (click)="handleEditClick()">
+            편집
+          </button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="currentMode !== AppTypes.PageMode.view">
+        <button type="button" class="cancel-btn" (click)="handleCancelClick()" [disabled]="isSubmitting">
+          취소
         </button>
-      </div>
+
+        <button
+          *ngIf="currentMode === AppTypes.PageMode.create"
+          type="submit" class="submit-btn" (click)="submitPostForm()" [disabled]="isSubmitting">
+          등록
+        </button>
+
+        <button
+          *ngIf="currentMode === AppTypes.PageMode.edit"
+          type="submit" class="submit-btn" [disabled]="isSubmitting">
+          수정
+        </button>
+      </ng-container>
     </div>
   </form>
 
-  <div class="comments-section">
+  <div
+    *ngIf="currentMode === AppTypes.PageMode.view"
+    class="comments-section">
     <div class="comments-list">
-      <div *ngFor="let comment of this.commentList.list" class="comment">
+      <div *ngFor="let comment of commentList.list" class="comment">
         <div class="comment-author">작성자: {{ comment.writer }}</div>
         <div class="comment-text">{{ comment.content }}</div>
       </div>
-      <!-- 다른 댓글들도 유사한 구조로 나열합니다 -->
     </div>
 
-    <form [formGroup]="this.commentForm" novalidate class="comment-form">
+    <form [formGroup]="commentForm" novalidate class="comment-form">
+      <!-- 댓글 입력 부분 -->
       <div class="comment-user-group">
         <input
           class="comment-author-input"
           type="text"
+          formControlName="writer"
           placeholder="작성자명"
         />
         <input
           class="comment-password-input"
           type="password"
+          formControlName="password"
           placeholder="비밀번호"
         />
       </div>
       <textarea
+        formControlName="content"
         placeholder="댓글을 입력하세요..."
       ></textarea>
-      <button class="submit-comment" (click)="onCommentSubmit()">
+      <button type="button" class="submit-comment" (click)="submitCommentForm()">
         등록
       </button>
     </form>

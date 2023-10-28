@@ -3,8 +3,8 @@ import * as PageListDto from "./PageListDto";
 export default {}
 
 export interface Response {
-  id: number;
-  bid: number;
+  no: number;
+  bno: number;
   content: string;
   writer: string;
   password: string;
@@ -12,9 +12,10 @@ export interface Response {
   created_dt: string;
 }
 
-export interface Summary {
-  id: number;
-  bid: number;
+export interface ListItem {
+  rownum: number;
+  no: number;
+  bno: number;
   writer: string;
   content: string;
   created_dt: string;
@@ -36,5 +37,5 @@ export interface Update {
 export interface RequestList extends PageListDto.Request {
 }
 
-export interface ResponseList extends PageListDto.Response<Summary> {
+export interface ResponseList extends PageListDto.Response<ListItem> {
 }

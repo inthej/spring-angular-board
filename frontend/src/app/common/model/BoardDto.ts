@@ -3,7 +3,7 @@ import * as PageListDto from "./PageListDto";
 export default {}
 
 export interface Response {
-  id: number;
+  no: number;
   title: string;
   content: string;
   writer: string;
@@ -13,18 +13,9 @@ export interface Response {
   created_dt: string;
 }
 
-export interface Summary {
-  id: number;
-  title: string;
-  content: string;
-  writer: string;
-  view_count: number;
-  created_dt: string;
-}
-
 export interface ListItem {
   rownum: number;
-  id: number;
+  no: number;
   title: string;
   content: string;
   writer: string;

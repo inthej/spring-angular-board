@@ -17,7 +17,7 @@
       </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let post of pageList.list" (click)="handleRowSelect(post.id)">
+        <tr *ngFor="let post of pageList.list" (click)="handleRowSelect(post.no)">
           <td>{{ post.rownum }}</td>
           <td class="title">{{post.title }}</td>
           <td>{{ post.writer }}</td>

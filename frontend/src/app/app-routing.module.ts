@@ -14,7 +14,7 @@ const routes: Routes = [
     children: [
       { path: '', component: HomeComponent },
       { path: 'board/list', component: BoardListComponent },
-      { path: 'board/view/:id', component: BoardViewComponent },
+      { path: 'board/view/:no', component: BoardViewComponent },
       { path: 'board/:mode', component: BoardViewComponent },
     ]
   },

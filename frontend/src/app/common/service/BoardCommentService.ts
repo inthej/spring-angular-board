@@ -63,9 +63,9 @@ export class BoardCommentService {
       );
   }
 
-  list = (bid: string, form: BoardCommentDto.RequestList): Observable<BoardCommentDto.ResponseList> => {
+  list = (bid: number): Observable<BoardCommentDto.ResponseList> => {
     const path = `${this.apiUrl}/${bid}/comments`;
-    return this.http.get<ResponseModel<BoardCommentDto.ResponseList>>(path, { params: <any>form })
+    return this.http.get<ResponseModel<BoardCommentDto.ResponseList>>(path)
       .pipe(
         map(response => response.data),
         catchError(error => {

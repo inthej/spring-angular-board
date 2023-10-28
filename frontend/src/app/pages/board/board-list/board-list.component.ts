@@ -4,6 +4,8 @@ import { BoardService } from "../../../common/service/BoardService";
 import AppConstants from "../../../common/AppConstants";
 import { catchError, debounceTime, of, Subject, switchMap, takeUntil } from "rxjs";
 import { AppErrorHandler } from "../../../common/handler/AppErrorHandler";
+import { Router } from "@angular/router";
+import * as AppTypes from "../../../common/AppTypes";
 
 @Component({
   selector: 'app-board-list',
@@ -26,7 +28,7 @@ export class BoardListComponent implements OnInit, OnDestroy {
     list: []
   }
 
-  constructor(private boardService: BoardService, private appErrorHandler: AppErrorHandler) {
+  constructor(private router: Router, private boardService: BoardService, private appErrorHandler: AppErrorHandler) {
   }
 
   ngOnInit(): void {
@@ -50,7 +52,7 @@ export class BoardListComponent implements OnInit, OnDestroy {
     ).subscribe(data => this.updatePageList(data));
   }
 
-  private subscribeToKeywordChanges() {
+  private subscribeToKeywordChanges(): void {
     this.keywordInput$.pipe(
       debounceTime(300),
       switchMap((keyword) => this.boardService.list({ ... this.page, page: 1, keyword })),
@@ -63,7 +65,9 @@ export class BoardListComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToErrors(): void {
-    this.appErrorHandler.stream$.subscribe(error => {
+    this.appErrorHandler.stream$.pipe(
+      takeUntil(this.destroy$),
+    ).subscribe(error => {
       if (error) {
         alert(error.message);
         this.appErrorHandler.clear();
@@ -81,11 +85,11 @@ export class BoardListComponent implements OnInit, OnDestroy {
   }
 
   public handleCreateBtnClick(): void {
-    console.log('onCreateBtnClick');
+    this.router.navigate([`/board/${AppTypes.PageMode.create}`])
   }
 
   public handleRowSelect(id: number): void {
-    console.log('onRowSelect')
+    this.router.navigate(['/board/view', id]);
   }
 
   public handlePrevBtnClick(): void {

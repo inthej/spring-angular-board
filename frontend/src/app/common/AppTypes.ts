@@ -9,3 +9,9 @@ export enum Direction {
   ASC = 'ASC',
   DESC = 'DESC'
 }
+
+export enum PageMode {
+  view = 'view',
+  create = 'create',
+  edit = 'edit'
+}

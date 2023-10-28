@@ -1,10 +1,11 @@
 <div class="board-view-container">
-  <form novalidate>
+  <form [formGroup]="this.postForm" novalidate>
     <div class="input-group">
       <label for="title">제목</label>
       <input
         type="text"
         id="title"
+        formControlName="title"
         placeholder="제목을 입력하세요..."
       />
     </div>
@@ -14,6 +15,7 @@
       <input
         type="text"
         id="author"
+        formControlName="author"
         placeholder="작성자명"
       />
     </div>
@@ -23,6 +25,7 @@
       <input
         type="password"
         id="password"
+        formControlName="password"
         placeholder="비밀번호를 입력하세요..."
       />
     </div>
@@ -31,22 +34,23 @@
       <label for="content">내용</label>
       <textarea
         id="content"
+        formControlName="content"
         rows="10"
         placeholder="내용을 작성하세요..."
       ></textarea>
     </div>
 
     <div class="form-actions">
-      <button type="button" class="list-btn">
+      <button type="button" class="list-btn" (click)="handleListClick()">
         목록
       </button>
 
       <div class="form-modify-actions">
-        <button type="button" class="delete-btn">
+        <button type="button" class="delete-btn" (click)="handleDeleteClick()">
           삭제
         </button>
 
-        <button type="button" class="edit-btn">
+        <button type="button" class="edit-btn" (click)="handleEditClick()">
           편집
         </button>
       </div>
@@ -55,14 +59,14 @@
 
   <div class="comments-section">
     <div class="comments-list">
-      <div class="comment">
-        <div class="comment-author">작성자: John Doe</div>
-        <div class="comment-text">이 게시물은 정말 유용합니다.</div>
+      <div *ngFor="let comment of this.commentList.list" class="comment">
+        <div class="comment-author">작성자: {{ comment.writer }}</div>
+        <div class="comment-text">{{ comment.content }}</div>
       </div>
       <!-- 다른 댓글들도 유사한 구조로 나열합니다 -->
     </div>
 
-    <form novalidate class="comment-form">
+    <form [formGroup]="this.commentForm" novalidate class="comment-form">
       <div class="comment-user-group">
         <input
           class="comment-author-input"
@@ -78,7 +82,7 @@
       <textarea
         placeholder="댓글을 입력하세요..."
       ></textarea>
-      <button class="submit-comment">
+      <button class="submit-comment" (click)="onCommentSubmit()">
         등록
       </button>
     </form>

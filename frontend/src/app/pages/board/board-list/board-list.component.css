@@ -103,7 +103,7 @@ table th:nth-child(5), table td:nth-child(5) {
 }
 
 .title {
-  text-align: left;
+  text-align: left !important;
   min-width: 200px;
 }
 
@@ -131,11 +131,3 @@ table th:nth-child(5), table td:nth-child(5) {
   color: #ffffff;
   border: none;
 }
-
-
-/*:host {*/
-/*  display: flex;*/
-/*  justify-content: center;*/
-/*  align-items: center;*/
-/*  width: 100%;*/
-/*}*/

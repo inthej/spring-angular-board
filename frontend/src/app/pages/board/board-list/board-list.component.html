@@ -6,9 +6,7 @@
         type="text"
         placeholder="검색어를 입력하세요..."
         (input)="handleKeywordChange($event)">
-      <button class="create-btn" (click)="handleCreateBtnClick()">
-        글쓰기
-      </button>
+      <button class="create-btn" (click)="handleCreateBtnClick()">글쓰기</button>
     </div>
   </div>
   <div class="board-content">
@@ -34,8 +32,18 @@
     </table>
   </div>
   <div class="board-footer">
-    <button class="page-btn" (click)="handlePrevBtnClick()" [disabled]="page.page <= 1">&lt;</button>
+    <button
+      class="page-btn"
+      (click)="handlePrevBtnClick()"
+      [disabled]="page.page <= 1">
+      &lt;
+    </button>
     <span>{{ page.page }} / {{ pageList.pages }}</span>
-    <button class="page-btn" (click)="handleNextBtnClick()" [disabled]="page.page >= pageList.pages">&gt;</button>
+    <button
+      class="page-btn"
+      (click)="handleNextBtnClick()"
+      [disabled]="page.page >= pageList.pages">
+      &gt;
+    </button>
   </div>
 </div>

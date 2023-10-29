@@ -10,6 +10,7 @@ import { delay, Subject, takeUntil } from "rxjs";
 import { AppErrorHandler } from "../../../common/handler/AppErrorHandler";
 import * as BoardCommentDto from "../../../common/model/BoardCommentDto";
 import * as BoardDto from "../../../common/model/BoardDto";
+import { WindowActionHandler } from "../../../common/handler/WindowActionHandler";
 
 @Component({
   selector: 'app-board-view',
@@ -43,6 +44,8 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     content: ['', Validators.required]
   });
 
+  private isSubmitted = false;
+  private isCommentSubmitted = false;
   public isLoading = false;
 
   constructor(
@@ -52,7 +55,8 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private boardService: BoardService,
     private boardCommentService: BoardCommentService,
-    private appErrorHandler: AppErrorHandler
+    private appErrorHandler: AppErrorHandler,
+    private windowActionHandler: WindowActionHandler
   ) {
   }
 
@@ -75,7 +79,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
       const isViewMode = this.currentMode === AppTypes.PageMode.view;
       if (isViewMode && !this.no) {
-        alert('유효하지 않은 접근입니다.');
+        this.windowActionHandler.alert('유효하지 않은 접근입니다.');
         this.router.navigate(['/board/list']);
         return;
       }
@@ -91,7 +95,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
     ).subscribe(error => {
       if (error) {
-        alert(error.message);
+        this.windowActionHandler.alert(error.message);
         this.appErrorHandler.clear();
       }
     })
@@ -150,7 +154,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   }
 
   public handleDeleteClick() {
-    if (confirm('정말로 이 게시물을 삭제하시겠습니까?')) {
+    if (this.windowActionHandler.confirm('정말로 이 게시물을 삭제하시겠습니까?')) {
       this.boardService.delete(this.no).pipe(
         delay(1_000),
         takeUntil(this.destroy$),
@@ -179,6 +183,8 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   public submitPostForm() {
     if (this.postForm.invalid) {
+      this.isSubmitted = true
+      this.postForm.markAllAsTouched();
       return;
     }
 
@@ -197,7 +203,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       ).subscribe({
         next: data => {
-          alert('게시물이 등록되었습니다.');
+          this.windowActionHandler.alert('게시물이 등록되었습니다.');
           this.router.navigate(['/board/list']);
         },
         error: err => {
@@ -217,7 +223,7 @@ export class BoardViewComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       ).subscribe({
         next: data => {
-          alert('게시물이 수정되었습니다.');
+          this.windowActionHandler.alert('게시물이 수정되었습니다.');
           this.router.navigate(['/board/list']);
         },
         error: err => {
@@ -232,6 +238,8 @@ export class BoardViewComponent implements OnInit, OnDestroy {
 
   public submitCommentForm() {
     if (this.commentForm.invalid) {
+      this.isCommentSubmitted = true
+      this.commentForm.markAllAsTouched();
       return;
     }
 
@@ -247,6 +255,8 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: data => {
         this.commentForm.reset();
+        this.windowActionHandler.reload();
+        this.windowActionHandler.scrollToTop();
       },
       error: err => {
         this.appErrorHandler.report(err);
@@ -255,5 +265,21 @@ export class BoardViewComponent implements OnInit, OnDestroy {
         this.isLoading = true;
       }
     });
+  }
+
+  public postFormHasError(key: string) {
+    return this.postForm.get(key)?.touched && this.postForm.get(key)?.hasError('required');
+  }
+
+  public commentFormHasError(key: string) {
+    return this.commentForm.get(key)?.touched && this.commentForm.get(key)?.hasError('required');
+  }
+
+  public checkError(key: string) {
+    return this.isSubmitted ? this.postForm.get(key)?.hasError('required') : null;
+  }
+
+  public checkCommentError(key: string) {
+    return this.isCommentSubmitted ? this.commentForm.get(key)?.hasError('required') : null;
   }
 }

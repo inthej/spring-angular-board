@@ -6,6 +6,7 @@ import { debounceTime, Subject, switchMap, takeUntil } from "rxjs";
 import { AppErrorHandler } from "../../../common/handler/AppErrorHandler";
 import { Router } from "@angular/router";
 import * as AppTypes from "../../../common/AppTypes";
+import { WindowActionHandler } from "../../../common/handler/WindowActionHandler";
 
 @Component({
   selector: 'app-board-list',
@@ -33,7 +34,8 @@ export class BoardListComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private boardService: BoardService,
-    private appErrorHandler: AppErrorHandler) {
+    private appErrorHandler: AppErrorHandler,
+    private windowActionHandler: WindowActionHandler) {
   }
 
   ngOnInit(): void {
@@ -92,7 +94,7 @@ export class BoardListComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
     ).subscribe(error => {
       if (error) {
-        alert(error.message);
+        this.windowActionHandler.alert(error.message);
         this.appErrorHandler.clear();
       }
     })

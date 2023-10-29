@@ -8,7 +8,11 @@
         placeholder="제목을 입력하세요..."
         formControlName="title"
         [readonly]="currentMode === AppTypes.PageMode.view"
+        [attr.aria-invalid]="checkError('title')"
       />
+      <small *ngIf="postFormHasError('title')" role="alert">
+        제목은 필수 입력입니다.
+      </small>
     </div>
 
     <div class="input-group">
@@ -19,7 +23,11 @@
         placeholder="작성자명"
         formControlName="author"
         [readonly]="currentMode === AppTypes.PageMode.view"
+        [attr.aria-invalid]="checkError('author')"
       />
+      <small *ngIf="postFormHasError('author')" role="alert">
+        작성자는 필수 입력입니다.
+      </small>
     </div>
 
     <div *ngIf="currentMode !== AppTypes.PageMode.view" class="input-group">
@@ -29,7 +37,11 @@
         type="password"
         placeholder="비밀번호를 입력하세요..."
         formControlName="password"
+        [attr.aria-invalid]="checkError('password')"
       />
+      <small *ngIf="postFormHasError('password')" role="alert">
+        비밀번호는 필수 입력입니다.
+      </small>
     </div>
 
     <div class="input-group">
@@ -40,7 +52,11 @@
         placeholder="내용을 작성하세요..."
         formControlName="content"
         [readonly]="currentMode === AppTypes.PageMode.view"
+        [attr.aria-invalid]="checkError('content')"
       ></textarea>
+      <small *ngIf="postFormHasError('content')" role="alert">
+        글 내용이 작성되지 않았습니다.
+      </small>
     </div>
 
     <div class="form-actions">
@@ -100,17 +116,20 @@
           type="text"
           placeholder="작성자명"
           formControlName="writer"
+          [attr.aria-invalid]="checkCommentError('writer')"
         />
         <input
           class="comment-password-input"
           type="password"
           placeholder="비밀번호"
           formControlName="password"
+          [attr.aria-invalid]="checkCommentError('password')"
         />
       </div>
       <textarea
         placeholder="댓글을 입력하세요..."
         formControlName="content"
+        [attr.aria-invalid]="checkCommentError('content')"
       ></textarea>
       <button
         class="submit-comment"

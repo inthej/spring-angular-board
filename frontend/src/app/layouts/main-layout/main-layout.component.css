@@ -36,3 +36,13 @@
   justify-content: center;
   margin-top: 10px;
 }
+
+/* main-layout.component.css */
+::ng-deep .content app-home,
+::ng-deep .content app-board-list,
+::ng-deep .content app-board-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

@@ -10,6 +10,8 @@
         글쓰기
       </button>
     </div>
+  </div>
+  <div class="board-content">
     <table>
       <thead>
       <tr>
@@ -21,13 +23,13 @@
       </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let post of pageList.list" (click)="handleRowSelect(post.no)">
-          <td>{{ post.rownum }}</td>
-          <td class="title">{{post.title }}</td>
-          <td>{{ post.writer }}</td>
-          <td>{{ post.created_dt }}</td>
-          <td>{{ post.view_count }}</td>
-        </tr>
+      <tr *ngFor="let post of pageList.list" (click)="handleRowSelect(post.no)">
+        <td>{{ post.rownum }}</td>
+        <td class="title">{{post.title }}</td>
+        <td>{{ post.writer }}</td>
+        <td>{{ post.created_dt }}</td>
+        <td>{{ post.view_count }}</td>
+      </tr>
       </tbody>
     </table>
   </div>

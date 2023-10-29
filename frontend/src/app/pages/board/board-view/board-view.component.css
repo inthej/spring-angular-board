@@ -254,3 +254,10 @@ input[aria-invalid="false"], textarea[aria-invalid="false"] {
 .comment-edit-btn:disabled:hover, .comment-delete-btn:disabled:hover {
   background-color: #ccc;     /* 호버 시에도 회색 배경을 유지 */
 }
+
+/*:host {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  align-items: center;*/
+/*  width: 100%;*/
+/*}*/

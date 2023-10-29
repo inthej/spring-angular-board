@@ -1,7 +1,11 @@
 <div class="board-container">
   <div class="board-header">
     <div class="board-actions">
-      <input type="text" placeholder="검색어를 입력하세요..." class="search-input" (input)="handleKeywordChange($event)">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="검색어를 입력하세요..."
+        (input)="handleKeywordChange($event)">
       <button class="create-btn" (click)="handleCreateBtnClick()">
         글쓰기
       </button>

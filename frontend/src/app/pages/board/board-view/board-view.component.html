@@ -3,10 +3,10 @@
     <div class="input-group">
       <label for="title">제목</label>
       <input
-        type="text"
         id="title"
-        formControlName="title"
+        type="text"
         placeholder="제목을 입력하세요..."
+        formControlName="title"
         [readonly]="currentMode === AppTypes.PageMode.view"
       />
     </div>
@@ -14,21 +14,21 @@
     <div class="input-group">
       <label for="author">작성자</label>
       <input
-        type="text"
         id="author"
-        formControlName="author"
+        type="text"
         placeholder="작성자명"
+        formControlName="author"
         [readonly]="currentMode === AppTypes.PageMode.view"
       />
     </div>
 
-    <div class="input-group" *ngIf="currentMode !== AppTypes.PageMode.view">
+    <div *ngIf="currentMode !== AppTypes.PageMode.view" class="input-group">
       <label for="password">비밀번호</label>
       <input
-        type="password"
         id="password"
-        formControlName="password"
+        type="password"
         placeholder="비밀번호를 입력하세요..."
+        formControlName="password"
       />
     </div>
 
@@ -36,80 +36,82 @@
       <label for="content">내용</label>
       <textarea
         id="content"
-        formControlName="content"
         rows="10"
         placeholder="내용을 작성하세요..."
+        formControlName="content"
         [readonly]="currentMode === AppTypes.PageMode.view"
       ></textarea>
     </div>
 
     <div class="form-actions">
       <ng-container *ngIf="currentMode === AppTypes.PageMode.view">
-        <button type="button" class="list-btn" (click)="handleListClick()">
+        <button class="list-btn" type="button" (click)="handleListClick()">
           목록
         </button>
 
         <div class="form-modify-actions">
-          <button type="button" class="delete-btn" (click)="handleDeleteClick()">
+          <button class="delete-btn" type="button" (click)="handleDeleteClick()">
             삭제
           </button>
 
-          <button type="button" class="edit-btn" (click)="handleEditClick()">
+          <button class="edit-btn" type="button" (click)="handleEditClick()">
             편집
           </button>
         </div>
       </ng-container>
       <ng-container *ngIf="currentMode !== AppTypes.PageMode.view">
-        <button type="button" class="cancel-btn" (click)="handleCancelClick()" [disabled]="isSubmitting">
+        <button class="cancel-btn" type="button" (click)="handleCancelClick()" [disabled]="isSubmitting">
           취소
         </button>
 
         <button
           *ngIf="currentMode === AppTypes.PageMode.create"
-          type="submit" class="submit-btn" (click)="submitPostForm()" [disabled]="isSubmitting">
+          class="submit-btn"
+          type="submit"
+          (click)="submitPostForm()"
+          [disabled]="isSubmitting">
           등록
         </button>
 
         <button
           *ngIf="currentMode === AppTypes.PageMode.edit"
-          type="submit" class="submit-btn" [disabled]="isSubmitting">
+          class="submit-btn"
+          type="submit"
+          [disabled]="isSubmitting">
           수정
         </button>
       </ng-container>
     </div>
   </form>
 
-  <div
-    *ngIf="currentMode === AppTypes.PageMode.view"
-    class="comments-section">
+  <div *ngIf="currentMode === AppTypes.PageMode.view" class="comments-section">
     <div class="comments-list">
-      <div *ngFor="let comment of commentList.list" class="comment">
+      <div class="comment" *ngFor="let comment of commentList.list">
         <div class="comment-author">작성자: {{ comment.writer }}</div>
         <div class="comment-text">{{ comment.content }}</div>
       </div>
     </div>
 
     <form [formGroup]="commentForm" novalidate class="comment-form">
-      <!-- 댓글 입력 부분 -->
       <div class="comment-user-group">
         <input
           class="comment-author-input"
           type="text"
-          formControlName="writer"
           placeholder="작성자명"
+          formControlName="writer"
         />
         <input
           class="comment-password-input"
           type="password"
-          formControlName="password"
           placeholder="비밀번호"
+          formControlName="password"
         />
       </div>
       <textarea
-        formControlName="content"
         placeholder="댓글을 입력하세요..."
+        formControlName="content"
       ></textarea>
-      <button type="button" class="submit-comment" (click)="submitCommentForm()">
+      <button class="submit-comment" type="button" (click)="submitCommentForm()">
         등록
       </button>
     </form>

@@ -60,7 +60,7 @@
         </div>
       </ng-container>
       <ng-container *ngIf="currentMode !== AppTypes.PageMode.view">
-        <button class="cancel-btn" type="button" (click)="handleCancelClick()" [disabled]="isSubmitting">
+        <button class="cancel-btn" type="button" (click)="handleCancelClick()" [disabled]="isLoading">
           취소
         </button>
 
@@ -69,7 +69,7 @@
           class="submit-btn"
           type="submit"
           (click)="submitPostForm()"
-          [disabled]="isSubmitting">
+          [disabled]="isLoading">
           등록
         </button>
 
@@ -77,7 +77,8 @@
           *ngIf="currentMode === AppTypes.PageMode.edit"
           class="submit-btn"
           type="submit"
-          [disabled]="isSubmitting">
+          (click)="submitPostForm()"
+          [disabled]="isLoading">
           수정
         </button>
       </ng-container>
@@ -111,7 +112,11 @@
         placeholder="댓글을 입력하세요..."
         formControlName="content"
       ></textarea>
-      <button class="submit-comment" type="button" (click)="submitCommentForm()">
+      <button
+        class="submit-comment"
+        type="button"
+        (click)="submitCommentForm()"
+        [disabled]="isLoading">
         등록
       </button>
     </form>

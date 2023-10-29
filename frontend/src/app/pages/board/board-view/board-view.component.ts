@@ -6,9 +6,10 @@ import { ActivatedRoute, Router } from "@angular/router";
 import ValueUtils from "../../../common/utils/ValueUtils";
 import { BoardService } from "../../../common/service/BoardService";
 import { BoardCommentService } from "../../../common/service/BoardCommentService";
-import { catchError, of, Subject, takeUntil } from "rxjs";
+import { delay, Subject, takeUntil } from "rxjs";
 import { AppErrorHandler } from "../../../common/handler/AppErrorHandler";
 import * as BoardCommentDto from "../../../common/model/BoardCommentDto";
+import * as BoardDto from "../../../common/model/BoardDto";
 
 @Component({
   selector: 'app-board-view',
@@ -42,13 +43,12 @@ export class BoardViewComponent implements OnInit, OnDestroy {
     content: ['', Validators.required]
   });
 
-  public isSubmitting = false;
-  public isCommentSubmitting = false;
+  public isLoading = false;
 
   constructor(
+    private location: Location,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location,
     private fb: FormBuilder,
     private boardService: BoardService,
     private boardCommentService: BoardCommentService,
@@ -67,11 +67,13 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToParams(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
       this.no = params['no'];
       this.currentMode = ValueUtils.nvl(params['mode'], AppTypes.PageMode.view);
-      const isViewMode = this.currentMode === AppTypes.PageMode.view;
 
+      const isViewMode = this.currentMode === AppTypes.PageMode.view;
       if (isViewMode && !this.no) {
         alert('유효하지 않은 접근입니다.');
         this.router.navigate(['/board/list']);
@@ -103,31 +105,39 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   private subscribeToPost(): void {
     this.boardService.get(this.no).pipe(
       takeUntil(this.destroy$),
-      catchError(error => {
-        this.appErrorHandler.report(error);
-        return of(null);
-      })
-    ).subscribe(data => {
-      if (data) {
-        this.postForm.setValue({
-          title: ValueUtils.nvl(data.title),
-          author: ValueUtils.nvl(data.writer),
-          password: '',
-          content: ValueUtils.nvl(data.content)
-        });
+    ).subscribe({
+      next: data => {
+        if (data) {
+          this.postForm.setValue({
+            title: ValueUtils.nvl(data.title),
+            author: ValueUtils.nvl(data.writer),
+            password: '',
+            content: ValueUtils.nvl(data.content)
+          });
+        }
+      },
+      error: err => {
+        this.appErrorHandler.report(err);
       }
     })
   }
 
   private subscribeToComments(): void {
+    this.isLoading = true;
     this.boardCommentService.list(this.no).pipe(
       takeUntil(this.destroy$),
-      catchError(error => {
-        this.appErrorHandler.report(error);
-        return of(this.commentList);
-      })
-    ).subscribe(data => {
-      this.commentList = data;
+    ).subscribe({
+      next: data => {
+        if (data) {
+          this.commentList = data;
+        }
+      },
+      error: err => {
+        this.appErrorHandler.report(err);
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
     })
   }
 
@@ -142,13 +152,18 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   public handleDeleteClick() {
     if (confirm('정말로 이 게시물을 삭제하시겠습니까?')) {
       this.boardService.delete(this.no).pipe(
+        delay(1_000),
         takeUntil(this.destroy$),
-        catchError(error => {
-          this.appErrorHandler.report(error);
-          return of(null);
-        })
-      ).subscribe(() => {
-        this.router.navigate(['/board/list']);
+      ).subscribe({
+        next: data => {
+          this.router.navigate(['/board/list']);
+        },
+        error: err => {
+          this.appErrorHandler.report(err);
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
       })
     }
   }
@@ -163,12 +178,82 @@ export class BoardViewComponent implements OnInit, OnDestroy {
   }
 
   public submitPostForm() {
-    this.isSubmitting = true;
-    this.isSubmitting = false;
+    if (this.postForm.invalid) {
+      return;
+    }
+
+    const payload = {
+      title: this.postForm.value.title,
+      writer: this.postForm.value.author,
+      password: this.postForm.value.password,
+      content: this.postForm.value.content
+    }
+
+    if (this.currentMode === AppTypes.PageMode.create) {
+      this.isLoading = true;
+
+      this.boardService.create(payload as BoardDto.Create).pipe(
+        delay(1_000),
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: data => {
+          alert('게시물이 등록되었습니다.');
+          this.router.navigate(['/board/list']);
+        },
+        error: err => {
+          this.appErrorHandler.report(err);
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      })
+      return;
+    }
+
+    if (this.currentMode === AppTypes.PageMode.edit) {
+      this.isLoading = true;
+      this.boardService.update(this.no, payload as BoardDto.Update).pipe(
+        delay(1_000),
+        takeUntil(this.destroy$)
+      ).subscribe({
+        next: data => {
+          alert('게시물이 수정되었습니다.');
+          this.router.navigate(['/board/list']);
+        },
+        error: err => {
+          this.appErrorHandler.report(err);
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      })
+    }
   }
 
   public submitCommentForm() {
-    this.isCommentSubmitting = true;
-    this.isCommentSubmitting = false;;
+    if (this.commentForm.invalid) {
+      return;
+    }
+
+    const payload = {
+      ...this.commentForm.value,
+    } as BoardCommentDto.Create;
+
+    this.isLoading = true;
+
+    this.boardCommentService.create(this.no, payload).pipe(
+      delay(1_000),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: data => {
+        this.commentForm.reset();
+      },
+      error: err => {
+        this.appErrorHandler.report(err);
+      },
+      complete: () => {
+        this.isLoading = true;
+      }
+    });
   }
 }

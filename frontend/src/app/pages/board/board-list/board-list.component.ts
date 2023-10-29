@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import * as BoardDto from "../../../common/model/BoardDto";
 import { BoardService } from "../../../common/service/BoardService";
 import AppConstants from "../../../common/AppConstants";
-import { catchError, debounceTime, of, Subject, switchMap, takeUntil } from "rxjs";
+import { debounceTime, Subject, switchMap, takeUntil } from "rxjs";
 import { AppErrorHandler } from "../../../common/handler/AppErrorHandler";
 import { Router } from "@angular/router";
 import * as AppTypes from "../../../common/AppTypes";
@@ -28,7 +28,12 @@ export class BoardListComponent implements OnInit, OnDestroy {
     list: []
   }
 
-  constructor(private router: Router, private boardService: BoardService, private appErrorHandler: AppErrorHandler) {
+  public isLoading = false;
+
+  constructor(
+    private router: Router,
+    private boardService: BoardService,
+    private appErrorHandler: AppErrorHandler) {
   }
 
   ngOnInit(): void {
@@ -43,25 +48,43 @@ export class BoardListComponent implements OnInit, OnDestroy {
   }
 
   private search() {
+    this.isLoading = true;
     this.boardService.list(this.page).pipe(
-      takeUntil(this.destroy$),
-      catchError(error => {
-        this.appErrorHandler.report(error);
-        return of(this.pageList);
-      })
-    ).subscribe(data => this.updatePageList(data));
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: data => {
+        if (data) {
+          this.updatePageList(data)
+        }
+      },
+      error: err => {
+        this.appErrorHandler.report(err);
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
   }
 
   private subscribeToKeywordChanges(): void {
+    this.isLoading = true;
     this.keywordInput$.pipe(
       debounceTime(300),
       switchMap((keyword) => this.boardService.list({ ... this.page, page: 1, keyword })),
       takeUntil(this.destroy$),
-      catchError(error => {
-        this.appErrorHandler.report(error);
-        return of(this.pageList);
-      })
-    ).subscribe(data => this.updatePageList(data));
+    ).subscribe({
+      next: data => {
+        if (data) {
+          this.updatePageList(data);
+        }
+      },
+      error: err => {
+        this.appErrorHandler.report(err);
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
   }
 
   private subscribeToErrors(): void {

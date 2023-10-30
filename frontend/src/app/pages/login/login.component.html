@@ -1,1 +1,37 @@
-<div class="login-container">Login 페이지 입니다</div>
+<div class="login-container">
+  <form action="/" method="post">
+    <div class="img-container">
+      <img src="assets/img/img_avatar2.png" alt="Avatar" class="avatar"/>
+    </div>
+
+    <div class="input-container">
+      <label htmlFor="uname">
+        <b>Username</b>
+      </label>
+      <input type="text" placeholder="Enter Username" name="uname" required/>
+
+      <label htmlFor="psw">
+        <b>Password</b>
+      </label>
+      <input type="password" placeholder="Enter Password" name="psw" required/>
+
+      <button type="submit" class="login-button">
+        Login
+      </button>
+
+      <div class="remember-me">
+        <input type="checkbox" checked="checked" name="remember"/>
+        <label>Remember me</label>
+      </div>
+    </div>
+
+    <div class="footer-container">
+      <button type="button" class="cancel-button">
+        Cancel
+      </button>
+      <span class="password-reset">
+                Forgot <a routerLink="#">password?</a>
+            </span>
+    </div>
+  </form>
+</div>

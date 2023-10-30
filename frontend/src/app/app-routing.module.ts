@@ -6,6 +6,7 @@ import { BoardListComponent } from "./pages/board/board-list/board-list.componen
 import { BoardViewComponent } from "./pages/board/board-view/board-view.component";
 import { EmptyLayoutComponent } from "./layouts/empty-layout/empty-layout.component";
 import { LoginComponent } from "./pages/login/login.component";
+import { SignupComponent } from "./pages/signup/signup.component";
 
 const routes: Routes = [
   {
@@ -23,6 +24,13 @@ const routes: Routes = [
     component: EmptyLayoutComponent,
     children: [
       { path: '', component: LoginComponent },
+    ]
+  },
+  {
+    path: 'signup',
+    component: EmptyLayoutComponent,
+    children: [
+      { path: '', component: SignupComponent },
     ]
   },
   { path: 'board', redirectTo: 'board/list', pathMatch: 'full' },

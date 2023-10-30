@@ -10,6 +10,7 @@ import { BoardListComponent } from './pages/board/board-list/board-list.componen
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from "@angular/common/http";
 import { ReactiveFormsModule } from "@angular/forms";
+import { SignupComponent } from './pages/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { ReactiveFormsModule } from "@angular/forms";
     HomeComponent,
     BoardViewComponent,
     BoardListComponent,
+    SignupComponent,
   ],
   imports: [
     BrowserModule,

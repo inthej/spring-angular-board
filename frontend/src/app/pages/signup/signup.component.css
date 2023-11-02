@@ -2,7 +2,7 @@
 
 }
 
-input[type=text], input[type=password] {
+.signup-input {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
@@ -11,17 +11,17 @@ input[type=text], input[type=password] {
   background: #f1f1f1;
 }
 
-input[type=text]:focus, input[type=password]:focus {
+.signup-input:focus {
   background-color: #ddd;
   outline: none;
 }
 
-hr {
+.signup-hr {
   border: 1px solid #f1f1f1;
   margin-bottom: 25px;
 }
 
-button {
+.signup-button-container button {
   background-color: #04AA6D;
   color: white;
   padding: 14px 20px;
@@ -32,32 +32,48 @@ button {
   opacity: 0.9;
 }
 
-button:hover {
+.signup-button-container button:hover {
   opacity: 1;
 }
 
-.cancelbtn {
+.signup-cancelbtn {
   padding: 14px 20px;
   background-color: #f44336;
 }
 
-.cancelbtn, .signupbtn {
+.signup-cancelbtn, .signup-signupbtn {
   float: left;
   width: 50%;
 }
 
-.container {
+.signup-button-container {
   padding: 16px;
 }
 
-.clearfix::after {
+.signup-button-container::after {
   content: "";
   clear: both;
   display: table;
 }
 
+.signup-remember {
+  margin-bottom: 15px;
+}
+
+.signup-checkbox {
+
+}
+
+.signup-terms {
+
+}
+
+.signup-terms-link {
+  color: dodgerblue;
+}
+
 @media screen and (max-width: 300px) {
-  .cancelbtn, .signupbtn {
+  .signup-cancelbtn, .signup-signupbtn {
     width: 100%;
   }
 }
